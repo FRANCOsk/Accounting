@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   build:
@@ -31,16 +30,21 @@ jobs:
           chmod +x mvnw
           ./mvnw --batch-mode --no-transfer-progress clean verify
 
-  dependency-review:
-    if: github.event_name == 'pull_request'
+  vulnerability-scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Review dependency changes
-        uses: actions/dependency-review-action@v4
+      - name: Scan repository dependencies
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          fail-on-severity: moderate
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          format: table
