@@ -44,7 +44,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           scanners: vuln
-          severity: HIGH,CRITICAL
+          severity: MEDIUM,HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
           format: table
